@@ -1,0 +1,13 @@
+kaldi/
+
+_assets/
+
+.ipynb_checkpoints/
+
+test.wav
+
+files.txt
+
+*.txt
+
+words_list.pkl
