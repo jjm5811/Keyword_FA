@@ -9,3 +9,7 @@ test.wav
 files.txt
 
 words_list.pkl
+
+make_train_list.py
+
+make_train_list2.py
