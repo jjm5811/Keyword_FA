@@ -153,7 +153,6 @@ dictionary[' '] = 0
 
 ''' Generate alignment probability '''
 ## You need to change here !!! (load path)
-## I used all of dataset in Librispeech
 folder_name = 'train-960' # 'train-960', 'dev-other', 'dev-clean', 'test-other', test-clean'
 txt_files = glob.glob('/mnt/work4/datasets/keyword/LibriSpeech/' + folder_name + '/*/*/*.txt', recursive=True)
 num_text = len(txt_files)

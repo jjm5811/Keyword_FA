@@ -27,3 +27,10 @@ words_list/
 words_filter/
 
 make_filelist/
+
+checks_word.py
+
+test_list_1000.txt
+train_list_1000.txt
+test.py
+check_audio_size.ipynb

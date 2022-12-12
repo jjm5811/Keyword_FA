@@ -48,7 +48,7 @@ num_incorrect = 0
 num_one_char = 0
 num_save = 0
 TO_BE_UESD_LINES = lines #lines[::900]
-fw = open("./words_filter/files_filtered_1s_cer20.txt", 'w')
+fw = open("./words_filter/files_filtered_1s_cer20.txt", 'w') ## You need to change HERE!
 
 for line in tqdm(TO_BE_UESD_LINES):
     SPEECH_FILE = line.split('|')[1][:-1]
@@ -56,9 +56,8 @@ for line in tqdm(TO_BE_UESD_LINES):
     waveform = waveform.to(device)
     
     word_label =line.split('|')[0]
-    word_label = word_label.replace('\'', '') #따옴표 제거
+    word_label = word_label.replace('\'', '') 
 
-    # 한 글자 데이터 제외
     if len(word_label) == 1 :
         num_one_char += 1
         continue
