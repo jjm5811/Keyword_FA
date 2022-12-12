@@ -21,3 +21,9 @@ make_1000_500_list.py
 make_enkr_list.py
 
 words_filter_no_margin.py
+
+words_list/
+
+words_filter/
+
+make_filelist/
