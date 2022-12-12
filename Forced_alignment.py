@@ -2,20 +2,16 @@ import os
 from dataclasses import dataclass
 import torch
 import torchaudio
-import requests
-import matplotlib
 import matplotlib.pyplot as plt
-import IPython
 import pdb
 import glob
+from tqdm import tqdm
+# from huggingsound import SpeechRecognitionModel
 
 def get_trellis(emission, tokens, blank_id=0):
   num_frame = emission.size(0)
   num_tokens = len(tokens)
 
-  # Trellis has extra diemsions for both time axis and tokens.
-  # The extra dim for tokens represents <SoS> (start-of-sentence)
-  # The extra dim for time axis is for simplification of the code. 
   trellis = torch.full((num_frame+1, num_tokens+1), -float('inf'))
   trellis[:, 0] = 0
   for t in range(num_frame):
@@ -111,21 +107,32 @@ def merge_words(segments, separator=' '):
 ''' Save file '''
 def display_segment(i):
   ratio = waveform.size(1) / (trellis.size(0) - 1)
-  margin = 0.03
-  ratio0 = ratio*(1-margin)
-  ratio1 = ratio*(1+margin)
-
   word = word_segments[i]
-  x0 = int(ratio0 * word.start)
-  x1 = int(ratio1 * word.end)
-  directory = f"/mnt/scratch/datasets/words/{word.label}"  ## You need to change here !!! (save path)
+  pdb.set_trace()
+  x0 = int(ratio * word.start)
+  x1 = int(ratio * word.end)
+  margin = int((16000 - ratio*(word.end-word.start))/2)
+  # margin = 16000 * 0.1 ## 0.1s margin
+  # margin = int((x1 - x0) * 0.50) ##Relative
+
+  directory = f"/mnt/scratch/datasets/words_margin_1s/{word.label}"  ## You need to change here !!! (save path)
+
   if not os.path.exists(directory):
-            os.makedirs(directory)
+    os.makedirs(directory)
+
   filename = f"{directory}/{word.label}_{file_name}_{i}.wav"
 
-  torchaudio.save(filename, waveform[:, x0:x1], 16000) # x0 = 7048 x1 = 8009
-  print(f"{word.label} ({word.score:.2f}): {x0 / 16000:.3f} - {x1 / 16000:.3f} sec")
+  if x0-margin > 0:
+    start = int(x0-margin)
+  else :
+    start = 0
 
+  if x1+margin < waveform.size(1):
+    end = int(x1+margin) + 1
+  else : 
+    end = waveform.size(1)
+
+  torchaudio.save(filename, waveform[:, start : end], 16000) 
 
 #######################################################
 '''-------------- Main ---------------'''
@@ -135,7 +142,7 @@ torch.random.manual_seed(0)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ''' Generate frame-wise label probability '''
-bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+bundle = torchaudio.pipelines.WAV2VEC2_ASR_LARGE_960H
 model = bundle.get_model().to(device)
 labels = bundle.get_labels()
 
@@ -148,9 +155,10 @@ dictionary[' '] = 0
 ## You need to change here !!! (load path)
 ## I used all of dataset in Librispeech
 folder_name = 'train-960' # 'train-960', 'dev-other', 'dev-clean', 'test-other', test-clean'
-txt_files = glob.glob('/mnt/scratch/datasets/LibriSpeech/' + folder_name + '/*/*/*.txt', recursive=True)
+txt_files = glob.glob('/mnt/work4/datasets/keyword/LibriSpeech/' + folder_name + '/*/*/*.txt', recursive=True)
+num_text = len(txt_files)
 
-for i in range(len(txt_files)):
+for i in tqdm(range(num_text)):
     f = open(txt_files[i], 'r')
     try:
       lines = f.readlines()
@@ -161,8 +169,8 @@ for i in range(len(txt_files)):
         origin_line = line[len(file_name)+1:]
 
         folder1, folder2, _ = file_name.split('-')
-        SPEECH_FILE = '/mnt/scratch/datasets/LibriSpeech/'+ folder_name +'/'+ folder1 +'/'+ folder2 +'/'+ file_name + '.flac'
-        
+        SPEECH_FILE = '/mnt/work4/datasets/keyword/LibriSpeech/'+ folder_name +'/'+ folder1 +'/'+ folder2 +'/'+ file_name + '.flac'
+
         with torch.inference_mode():
             try:
                 waveform, _ = torchaudio.load(SPEECH_FILE)

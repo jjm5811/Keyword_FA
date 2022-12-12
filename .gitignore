@@ -13,3 +13,11 @@ words_list.pkl
 make_train_list.py
 
 make_train_list2.py
+
+*.txt
+
+make_1000_500_list.py
+
+make_enkr_list.py
+
+words_filter_no_margin.py
