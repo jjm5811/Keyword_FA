@@ -1,4 +1,4 @@
-# Keyword_FA
+# LibriSpeech Keyword (LSK) dataset construction
 
 1. run Forced_aligment.py
 (Please modify lines 118, 156-157 to match your directory.)
