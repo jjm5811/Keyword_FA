@@ -1,13 +1,13 @@
 # Keyword_FA
 
-1. Forced_aligment.py 실행
-(118, 156~157번 줄 디렉토리에 맞게 수정해주세요.)
--> words 데이터셋 생성.
+1. run Forced_aligment.py
+(Please modify lines 118, 156-157 to match your directory.)
+-> Create words directory.
 
-2. make_filelist.py 실행
-(words 디렉토리의 파일리스트)
--> files.txt 생성.
+2. run make_filelist.py
+(File list in words directory)
+-> Create files.txt file.
 
-3. words_filter.py 실행
-(43, 51, 77번 줄 path 수정해주세요.)
--> words_filtered 데이터셋 생성.
+3. run words_filter.py
+(Please modify the path in lines 43, 51, and 77.)
+-> Create words_filtered dataset.
